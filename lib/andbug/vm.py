@@ -595,9 +595,18 @@ class Hook(SessionElement):
 
     def clear(self):
         #TODO: unclean
-        #TODO: EventRequest.Clear
+        conn = self.conn
+        buf = conn.buffer()
+        # 40:EK_METHOD_ENTRY
+        buf.pack('1i', 40, int(self.ident))
+        # 0x0F02 = {15, 2} EventRequest.Clear
+        code, unknown = conn.request(0x0F02, buf.data())
+        # fixme: check what a hell is the value stored in unknown
+        if code != 0:
+            raise RequestError(code)
+
         with self.sess.ectl:
-            del self.sess.emap[ident]
+            del self.sess.emap[self.ident]
 
 unpack_impl = [None,] * 256
 

@@ -1,0 +1,4 @@
+*.pyc
+lib/andbug/jdwp.so
+build/*
+
